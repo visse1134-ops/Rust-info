@@ -1,33 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Big Green Text</title>
+  <meta charset="UTF-8">
+  <title>System Info Webhook Trigger</title>
   <style>
     body {
-      font-family: system-ui, sans-serif;
-      margin: 0;
-      padding: 2rem;
-      background: #0b0f0c;
-      color: #00ff6a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #0f0;
       text-align: center;
+      padding-top: 50px;
     }
-    .output {
-      font-weight: 900;
-      font-size: clamp(2rem, 8vw, 10rem);
-      line-height: 1.05;
-      word-wrap: break-word;
-      text-shadow: 0 0 10px rgba(0, 255, 106, 0.25);
+    h1 {
+      font-size: 2em;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #0f0;
     }
   </style>
 </head>
 <body>
-  <div class="output">GeT hAcKeD</div> <!-- Change this text to whatever you want -->
+  <h1>System Info Webhook</h1>
+  <p>This page will trigger the webhook automatically when loaded.</p>
+  <div id="status">⏳ Sending request...</div>
+
+  <script>
+    // Replace with your Render backend URL
+    const API_URL = "https://rust-info.onrender.com/api/systeminfo";
+
+    fetch(API_URL)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("status").textContent = "✅ Webhook triggered successfully!";
+        console.log("Response:", data);
+      })
+      .catch(error => {
+        document.getElementById("status").textContent = "❌ Error triggering webhook.";
+        console.error("Error:", error);
+      });
+  </script>
 </body>
 </html>
-
