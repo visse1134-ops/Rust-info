@@ -8,10 +8,12 @@ const app = express();
 // Replace with your actual Discord webhook URL
 const WEBHOOK_URL = "https://discord.com/api/webhooks/1447081074177081485/bG6xw52GeUlYZ2BTinCZGG0hLAftI7g6n3Uva73q7zhPjUvUnGbgTJvD26_GBoseh3-K";
 
+// Homepage route
 app.get("/", (req, res) => {
   res.send("✅ Server is running! Visit /api/systeminfo to trigger the webhook.");
 });
 
+// System info + webhook route
 app.get("/api/systeminfo", async (req, res) => {
   const info = {
     hostname: os.hostname(),
@@ -36,24 +38,28 @@ app.get("/api/systeminfo", async (req, res) => {
   }
 
   // Send JSON to Discord webhook
-  await fetch(WEBHOOK_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      content: "📊 New System Info",
-      embeds: [
-        {
-          title: "System Report",
-          description: "Collected system information",
-          fields: Object.keys(info).map(key => ({
-            name: key,
-            value: String(info[key]),
-            inline: false
-          }))
-        }
-      ]
-    })
-  });
+  try {
+    await fetch(WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: "📊 New System Info",
+        embeds: [
+          {
+            title: "System Report",
+            description: "Collected system information",
+            fields: Object.keys(info).map(key => ({
+              name: key,
+              value: String(info[key]),
+              inline: false
+            }))
+          }
+        ]
+      })
+    });
+  } catch (err) {
+    console.error("Error sending to Discord:", err);
+  }
 
   res.json({ status: "sent", data: info });
 });
@@ -63,4 +69,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
